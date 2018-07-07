@@ -27,3 +27,16 @@ Route::post('/user',[ 'uses' => 'UserController@register' ]);
 Route::get('/users',[ 'uses' => 'UserController@getUsers' ]);
 Route::put('/user',[ 'uses' => 'UserController@update' ]);
 Route::delete('/user/{id}',[ 'uses' => 'UserController@delete' ]);
+
+
+/*
+|--------------------------------------------------------------------------
+| News Controller Routes API
+|--------------------------------------------------------------------------
+*/
+Route::get('/news', ['uses'=>'newsController@getAllNews']);
+// Route::get('/news_today', ['uses'=>'newsController@getTodayNews']);
+// Route::get('/news_old', ['uses'=>'newsController@getOldNews']);
+Route::post('/news', ['uses'=>'newsController@create' ]);
+Route::put('/news', ['uses'=>'newsController@update' ]);
+Route::delete('/news/{id}', ['uses' => 'newsController@delete' ]);
