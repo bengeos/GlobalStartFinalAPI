@@ -35,8 +35,16 @@ Route::delete('/user/{id}',[ 'uses' => 'UserController@delete' ]);
 |--------------------------------------------------------------------------
 */
 Route::get('/news', ['uses'=>'newsController@getAllNews']);
-// Route::get('/news_today', ['uses'=>'newsController@getTodayNews']);
-// Route::get('/news_old', ['uses'=>'newsController@getOldNews']);
 Route::post('/news', ['uses'=>'newsController@create' ]);
-Route::put('/news', ['uses'=>'newsController@update' ]);
+Route::post('/news_update', ['uses'=>'newsController@update' ]);
 Route::delete('/news/{id}', ['uses' => 'newsController@delete' ]);
+
+
+/*
+|--------------------------------------------------------------------------
+|Testimonies Controller Routes API
+|--------------------------------------------------------------------------
+*/
+Route::get('/Testimonies', ['uses'=>'TestimoniesController@getAllTestimonies']);
+Route::put('/Testimony/{id}', ['uses'=>'TestimoniesController@approve' ]);
+Route::delete('/Testimony/{id}', ['uses' => 'TestimoniesController@delete' ]);

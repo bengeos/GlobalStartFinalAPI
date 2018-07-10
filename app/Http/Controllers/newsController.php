@@ -16,26 +16,30 @@ class newsController extends Controller
             return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
         }
     }
-    // public function getTodayNews() {
-    //     try{
-    //         $today_news = News::with('newsCategory')->wheredate('updated_at', '>=', Carbon::today())->orderBy('updated_at', 'DES')->paginate(6);
-    //         return response()->json(['status'=> true, 'news'=> $today_news],200);
-    //     }catch (\Exception $exception){
-    //         return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
-    //     }
-    // }
-    // public function getOldNews() {
-    //     try{
-    //         $today_news = News::with('newsCategory')->wheredate('updated_at', '<=', Carbon::yesterday())->orderBy('updated_at', 'DES')->paginate(8);
-    //         return response()->json(['status'=> true, 'news'=> $today_news],200);
-    //     }catch (\Exception $exception){
-    //         return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
-    //     }
-    // }
-    public function create() {
+ 
+    public function create(Request $request) {
         try{
             $credential = request()->only('title', 'description','image');
-            $rules = ['title' => 'required', 'description' => 'required',];
+        if ($request->hasFile('image')) {
+            $posted_image_art =  $request->file('image');
+            $filnameWithExt = $request->file('image')->getClientOriginalName();
+
+            $filename = pathinfo($filnameWithExt, PATHINFO_FILENAME);
+
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            $fileNameToStore = $filename.'_'. time().'.'. $extension;
+
+            $destinationPath = public_path('/news_images');
+            $posted_image_art->move($destinationPath, $fileNameToStore);
+            $image_art_path = '/news_images/' . $fileNameToStore;
+
+            //$path = $request->file('image')->storeAs('\public\news_images', $fileNameToStore);
+        } else {
+            $fileNameToStore = "noimage.jpg";
+        }
+
+        $rules = ['title' => 'required', 'description' => 'required',];
             $validator = Validator::make($credential, $rules);
             if($validator->fails()) {
                 $error = $validator->messages();
@@ -43,9 +47,11 @@ class newsController extends Controller
             }
            
                 $newNews = new News();
+                $newNews->type = "News";
                 $newNews->title = $credential['title'];
                 $newNews->description = $credential['description'];
-                $newNews->image = $credential['image'];
+                $newNews->image = "news_images\\".$fileNameToStore;
+
                 if($newNews->save()){
                     return response()->json(['status'=> true, 'message'=> 'News Successfully Created', 'news'=>$newNews],200);
                 }else {
@@ -56,10 +62,12 @@ class newsController extends Controller
             return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
         }
     }
-    public function update() {
+    public function update(Request $request) {
         try{
             $credential = request()->only('id', 'title', 'description','image', 'updated_at');
-            $rules = ['id' => 'required'];
+             // print_r( $credential); exit();
+
+            $rules = ['id' => 'required','title'=> 'required','description'=>'required'];
             $validator = Validator::make($credential, $rules);
             if($validator->fails()) {
                 $error = $validator->messages();
@@ -70,12 +78,6 @@ class newsController extends Controller
                 $oldNews->title = isset($credential['title'])? $credential['title']: $oldNews->title;
                 $oldNews->description = isset($credential['description'])? $credential['description']: $oldNews->description;
                 $oldNews->updated_at = isset($credential['updated_at'])? Carbon::parse($credential['updated_at']): $oldNews->updated_at;
-                // if(isset($credential['category_id'])){
-                //     $oldNewsCategory = NewsCategory::where('id', '=',$credential['category_id'])->first();
-                //     if ($oldNewsCategory instanceof NewsCategory) {
-                //         $oldNews->category_id = $oldNewsCategory->id;
-                //     }
-                // }
                 if($oldNews->update()){
                     return response()->json(['status'=> true, 'message'=> 'News Successfully Updated', 'news'=>$oldNews],200);
                 }else {
