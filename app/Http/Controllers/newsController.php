@@ -50,7 +50,7 @@ class newsController extends Controller
                 $newNews->type = "News";
                 $newNews->title = $credential['title'];
                 $newNews->description = $credential['description'];
-                $newNews->image = "news_images\\".$fileNameToStore;
+                $newNews->image = "news_images/".$fileNameToStore;
 
                 if($newNews->save()){
                     return response()->json(['status'=> true, 'message'=> 'News Successfully Created', 'news'=>$newNews],200);

@@ -36,7 +36,7 @@ class TestimoniesController extends Controller
 
             $destinationPath = public_path('/news_images');
             $posted_image_art->move($destinationPath, $fileNameToStore);
-            $image_art_path = '/news_images/' . $fileNameToStore;
+            $image_art_path = 'news_images/' . $fileNameToStore;
 
             //$path = $request->file('image')->storeAs('\public\news_images', $fileNameToStore);
         } else {
