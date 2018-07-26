@@ -45,6 +45,7 @@ Route::delete('/news/{id}', ['uses' => 'newsController@delete' ]);
 |Testimonies Controller Routes API
 |--------------------------------------------------------------------------
 */
+Route::post('/Testimony', ['uses'=>'TestimoniesController@create']);
 Route::get('/Testimonies', ['uses'=>'TestimoniesController@getAllTestimonies']);
 Route::put('/Testimony/{id}', ['uses'=>'TestimoniesController@approve' ]);
 Route::delete('/Testimony/{id}', ['uses' => 'TestimoniesController@delete' ]);

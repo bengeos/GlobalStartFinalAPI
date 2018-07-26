@@ -23,7 +23,7 @@ class newsController extends Controller
         if ($request->hasFile('image')) {
             $posted_image_art =  $request->file('image');
             $filnameWithExt = $request->file('image')->getClientOriginalName();
-
+ 
             $filename = pathinfo($filnameWithExt, PATHINFO_FILENAME);
 
             $extension = $request->file('image')->getClientOriginalExtension();

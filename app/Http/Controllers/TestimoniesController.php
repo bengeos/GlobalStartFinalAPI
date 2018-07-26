@@ -16,6 +16,60 @@ class TestimoniesController extends Controller
         }
     }
 
+
+  
+
+
+
+  public function create(Request $request) {
+        try{
+            $credential = request()->only('title', 'body','image','address');
+        if ($request->hasFile('image')) {
+            $posted_image_art =  $request->file('image');
+            $filnameWithExt = $request->file('image')->getClientOriginalName();
+ 
+            $filename = pathinfo($filnameWithExt, PATHINFO_FILENAME);
+
+            $extension = $request->file('image')->getClientOriginalExtension();
+
+            $fileNameToStore = $filename.'_'. time().'.'. $extension;
+
+            $destinationPath = public_path('/news_images');
+            $posted_image_art->move($destinationPath, $fileNameToStore);
+            $image_art_path = '/news_images/' . $fileNameToStore;
+
+            //$path = $request->file('image')->storeAs('\public\news_images', $fileNameToStore);
+        } else {
+            $fileNameToStore = "noimage.jpg";
+        }
+
+        $rules = ['title' => 'required', 'body' => 'required',];
+            $validator = Validator::make($credential, $rules);
+            if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['error'=> $error],500);
+            }
+           
+                $newTestimony = new Testimonies();
+                $newTestimony->type = "Testimony";
+                $newTestimony->title = $credential['title'];
+                $newTestimony->address = $credential['address'];
+                $newTestimony->body = $credential['body'];
+                $newTestimony->image = "news_images\\".$fileNameToStore;
+
+                if($newTestimony->save()){
+                    return response()->json(['status'=> true, 'message'=> 'News Successfully Created', 'news'=>$newTestimony],200);
+                }else {
+                    return response()->json(['status'=>false, 'message'=> 'Whoops! unable to create news', 'error'=>'failed to create news'],500);
+                }
+            
+        }catch (\Exception $exception){
+            return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
+        }
+    }
+
+
+
        public function approve($id) {
            try{
             $Testimonies = Testimonies::where('id', '=', $id)->first();
