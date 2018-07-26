@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Testimonies;
+use Illuminate\Support\Facades\Validator;
 use App\News;
 class TestimoniesController extends Controller
 {
@@ -36,7 +37,7 @@ class TestimoniesController extends Controller
 
             $destinationPath = public_path('/news_images');
             $posted_image_art->move($destinationPath, $fileNameToStore);
-            $image_art_path = 'news_images/' . $fileNameToStore;
+            $image_art_path = '/news_images/' . $fileNameToStore;
 
             //$path = $request->file('image')->storeAs('\public\news_images', $fileNameToStore);
         } else {
@@ -55,7 +56,7 @@ class TestimoniesController extends Controller
                 $newTestimony->title = $credential['title'];
                 $newTestimony->address = $credential['address'];
                 $newTestimony->body = $credential['body'];
-                $newTestimony->image = "news_images\\".$fileNameToStore;
+                $newTestimony->image = "news_images/".$fileNameToStore;
 
                 if($newTestimony->save()){
                     return response()->json(['status'=> true, 'message'=> 'News Successfully Created', 'news'=>$newTestimony],200);
